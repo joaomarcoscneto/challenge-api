@@ -1,0 +1,40 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: database
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Start Laravel Sail
+        run: |
+          bash vendor/bin/sail up -d
+
+      - name: Install Composer dependencies
+        run: |
+          bash vendor/bin/sail composer install --no-ansi --no-interaction --no-progress --no-scripts --optimize-autoloader
+
+      - name: Run database migrations
+        run: |
+          bash vendor/bin/sail artisan migrate --seed --no-interaction
+
+      - name: Run tests
+        run: |
+          bash vendor/bin/sail artisan test
