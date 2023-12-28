@@ -21,11 +21,20 @@
         <env name="APP_ENV" value="testing"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
-        <env name="DB_DATABASE" value="testing"/>
-        <env name="MAIL_MAILER" value="array"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="MAIL_MAILER" value="smtp"/>
+        <env name="MAIL_HOST" value="mailpit"/>
+        <env name="MAIL_PORT" value="1025"/>
+        <env name="MAIL_USERNAME" value=""/>
+        <env name="MAIL_PASSWORD" value=""/>
+        <env name="MAIL_ENCRYPTION" value=""/>
+        <env name="MAIL_FROM_ADDRESS" value="hello@example.com"/>
+        <env name="MAIL_FROM_NAME" value="${APP_NAME}"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="JWT_SECRET" value="EKJwFdQGCgjMeOFyq49BhOXPnEfb1PsGiwwPnR18TtPe1Uw6S9mUVyut50Dj1A8H"/>
     </php>
 </phpunit>
