@@ -23,18 +23,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Start Laravel Sail
-        run: |
-          bash vendor/bin/sail up -d
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
 
       - name: Install Composer dependencies
-        run: |
-          bash vendor/bin/sail composer install --no-ansi --no-interaction --no-progress --no-scripts --optimize-autoloader
+        run: composer install --no-ansi --no-interaction --no-progress --optimize-autoloader
 
       - name: Run database migrations
-        run: |
-          bash vendor/bin/sail artisan migrate --seed --no-interaction
+        run: php artisan migrate --seed --no-interaction
 
       - name: Run tests
-        run: |
-          bash vendor/bin/sail artisan test
+        run: php artisan test
