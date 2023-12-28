@@ -6,36 +6,46 @@ on:
       - master
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  tests:
+    runs-on: ubuntu-20.04
 
     services:
       mysql:
-        image: mysql/mysql-server:8.0
+        image: mysql
         env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: database
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: rootpassword
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [ 7.3, 7.4, 8.0, 8.1 ]
+        laravel: [ ^8.0 ]
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
         with:
-          php-version: '8.1'
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-            
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Install Composer dependencies
-        run: composer install --no-ansi --no-interaction --no-progress --optimize-autoloader
-
-      - name: Run database migrations
-        run: php artisan migrate --seed --force --no-interaction
-
-      - name: Generate Key
-        run: php artisan key:generate
-
-      - name: Run tests
-        run: php artisan test
+      - name: Run test suite
+        run: vendor/bin/phpunit --verbose
+        env:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: test_db
+          DB_USERNAME: user
+          DB_PASSWORD: password
