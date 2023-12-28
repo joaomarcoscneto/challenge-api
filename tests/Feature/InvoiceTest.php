@@ -74,7 +74,7 @@ class InvoiceTest extends TestCase
         $this->actingAs($user);
 
         $newInvoiceData = [
-            'number' => '123456789',
+            'number' => '987654321',
         ];
 
         $response = $this->put('/api/invoices/' . $invoice->id, $newInvoiceData);
