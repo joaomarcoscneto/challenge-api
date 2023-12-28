@@ -36,7 +36,6 @@ class InvoiceCreatedNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            // Data to send in the notification
         ];
     }
 }
