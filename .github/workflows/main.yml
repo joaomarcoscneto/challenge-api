@@ -26,14 +26,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install Composer dependencies
+        run: |
+          composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
       - name: Start Laravel Sail
         run: |
           sudo chmod +x vendor/bin/sail
           ./vendor/bin/sail up -d
-
-      - name: Install Composer dependencies
-        run: |
-          ./vendor/bin/sail composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Generate application key
         run: |
